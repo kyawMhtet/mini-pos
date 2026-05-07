@@ -96,3 +96,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    margin: 0;
+  }
+  body {
+    padding: 1.5cm;
+  }
+}
