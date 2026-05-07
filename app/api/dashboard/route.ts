@@ -40,17 +40,26 @@ export async function GET() {
       }),
     ]);
 
-    const productIds = topProductsRaw.map((t) => t.productId);
+    const productIds = topProductsRaw.map(
+  (t: { productId: string }) => t.productId
+);
     const products = await prisma.product.findMany({
       where: { id: { in: productIds } },
       select: { id: true, name: true },
     });
-    const nameById = Object.fromEntries(products.map((p) => [p.id, p.name]));
+const nameById = Object.fromEntries(
+  products.map((p: { id: string; name: string }) => [p.id, p.name])
+);
 
-    const topProducts = topProductsRaw.map((t) => ({
-      name: nameById[t.productId] ?? "Unknown",
-      qtySold: t._sum.quantity ?? 0,
-    }));
+const topProducts = topProductsRaw.map(
+  (t: {
+    productId: string;
+    _sum: { quantity: number | null };
+  }) => ({
+    name: nameById[t.productId] ?? "Unknown",
+    qtySold: t._sum.quantity ?? 0,
+  })
+);
 
     return Response.json({
       todayRevenue: todayAgg._sum.total ?? 0,
