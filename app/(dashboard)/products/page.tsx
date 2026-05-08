@@ -66,21 +66,21 @@ export default function ProductsPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+          <h1 className="text-xl font-semibold text-gray-900">Products</h1>
           <p className="mt-0.5 text-sm text-gray-500">
             {isLoading ? "Loading…" : `${total} product${total !== 1 ? "s" : ""}`}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Status filter */}
-          <div className="flex rounded-lg border bg-white text-sm overflow-hidden shadow-sm">
+          <div className="flex flex-1 sm:flex-none rounded-lg border bg-white text-sm overflow-hidden shadow-sm">
             {STATUS_FILTERS.map((f) => (
               <button
                 key={f.value}
                 onClick={() => handleStatusChange(f.value)}
-                className={`px-4 py-2 font-medium transition-colors ${
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 font-medium transition-colors ${
                   statusFilter === f.value
                     ? "bg-gray-900 text-white"
                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -92,7 +92,8 @@ export default function ProductsPage() {
           </div>
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />
-            Add Product
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>

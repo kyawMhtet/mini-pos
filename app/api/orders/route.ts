@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
     const { customerName, note, discount, items } = createOrderSchema.parse(body);
 
     const order = await prisma.$transaction(async (tx) => {
-      // Daily sequence for order number
+      // Lock prevents concurrent transactions from reading the same count
+      await tx.$executeRaw`LOCK TABLE "Order" IN SHARE ROW EXCLUSIVE MODE`;
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const todayCount = await tx.order.count({ where: { createdAt: { gte: today } } });

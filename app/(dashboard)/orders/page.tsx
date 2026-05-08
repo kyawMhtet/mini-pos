@@ -53,18 +53,16 @@ export default function OrdersPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Orders</h1>
-          <p className="mt-0.5 text-sm text-gray-500">
-            {isLoading ? "Loading…" : `${total} order${total !== 1 ? "s" : ""}`}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-xl font-semibold text-gray-900">Orders</h1>
+        <p className="mt-0.5 text-sm text-gray-500">
+          {isLoading ? "Loading…" : `${total} order${total !== 1 ? "s" : ""}`}
+        </p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-52">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative w-full sm:flex-1 sm:min-w-52">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
           <Input
             placeholder="Search order # or customer…"
@@ -79,23 +77,22 @@ export default function OrdersPage() {
             type="date"
             value={dateFrom}
             onChange={(e) => handleDateChange("from", e.target.value)}
-            className="w-36 text-sm"
+            className="flex-1 sm:w-36 text-sm"
           />
-          <span className="text-xs text-gray-400">to</span>
+          <span className="text-xs text-gray-400 shrink-0">to</span>
           <Input
             type="date"
             value={dateTo}
             onChange={(e) => handleDateChange("to", e.target.value)}
-            className="w-36 text-sm"
+            className="flex-1 sm:w-36 text-sm"
           />
+          {hasFilters && (
+            <Button variant="outline" size="sm" onClick={clearFilters} className="shrink-0">
+              <X className="size-3.5" />
+              Clear
+            </Button>
+          )}
         </div>
-
-        {hasFilters && (
-          <Button variant="outline" size="sm" onClick={clearFilters}>
-            <X className="size-3.5" />
-            Clear
-          </Button>
-        )}
       </div>
 
       {/* Table */}

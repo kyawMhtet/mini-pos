@@ -35,7 +35,8 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <table className="w-full text-sm">
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-160 text-sm">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50/80">
             <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Product</th>
@@ -132,6 +133,7 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

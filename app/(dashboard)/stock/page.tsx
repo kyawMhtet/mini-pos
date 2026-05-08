@@ -110,7 +110,7 @@ export default function StockPage() {
 
   return (
     <div className="flex flex-col gap-5 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Stock</h1>
           <p className="text-sm text-gray-500 mt-0.5">
@@ -141,7 +141,7 @@ export default function StockPage() {
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         {/* Search bar */}
         <div className="px-4 py-3 border-b border-gray-100">
-          <div className="relative max-w-xs">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
             <Input
               placeholder="Search by name or SKU…"
@@ -172,7 +172,8 @@ export default function StockPage() {
           </p>
         ) : (
           <>
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-120 text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50">
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-8">#</th>
@@ -213,6 +214,7 @@ export default function StockPage() {
                 ))}
               </tbody>
             </table>
+            </div>
 
             {(data?.totalPages ?? 1) > 1 && (
               <div className="px-5 py-4 border-t border-gray-100">
