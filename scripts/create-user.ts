@@ -3,7 +3,7 @@
  * Example: npx tsx scripts/create-user.ts admin@example.com secret123 "Admin"
  */
 import "dotenv/config";
-import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
