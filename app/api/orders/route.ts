@@ -56,13 +56,17 @@ export async function POST(request: NextRequest) {
     const { customerName, note, discount, items } = createOrderSchema.parse(body);
 
     const order = await prisma.$transaction(async (tx) => {
-      // Lock prevents concurrent transactions from reading the same count
-      await tx.$executeRaw`LOCK TABLE "Order" IN SHARE ROW EXCLUSIVE MODE`;
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayCount = await tx.order.count({ where: { createdAt: { gte: today } } });
-      const orderNumber = generateOrderNumber(todayCount + 1);
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const dateKey = `${y}-${m}-${d}`;
+      const [counter] = await tx.$queryRaw<[{ value: number }]>`
+        INSERT INTO "DailyCounter" (date, value) VALUES (${dateKey}, 1)
+        ON CONFLICT (date) DO UPDATE SET value = "DailyCounter".value + 1
+        RETURNING value
+      `;
+      const orderNumber = generateOrderNumber(Number(counter.value));
 
       // Validate stock
       for (const item of items) {

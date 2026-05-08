@@ -67,6 +67,12 @@ enum OrderStatus {
   CANCELLED
 }
 
+// Atomic daily sequence for order numbers
+model DailyCounter {
+  date  String @id
+  value Int    @default(0)
+}
+
 // Auth.js (NextAuth v5) models
 model User {
   id            String    @id @default(cuid())
