@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mini POS",
+  title: "Diva Delivery Bag",
   description: "Point of Sale system",
 };
 

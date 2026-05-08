@@ -40,7 +40,7 @@ export default function LoginPage() {
     }
   }
 
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Mini POS";
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Diva Delivery Bag";
 
   return (
     <div className="w-full max-w-sm">
