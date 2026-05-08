@@ -1,14 +1,15 @@
 "use client";
 
-import { use, useEffect, useRef } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Loader2, Printer } from "lucide-react";
+import { ArrowLeft, Loader2, Pencil, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { OrderInvoice } from "@/components/orders/OrderInvoice";
+import { OrderEditForm } from "@/components/orders/OrderEditForm";
 import { PDFDownloadButton } from "@/components/orders/PDFDownloadButton";
-import { useOrder } from "@/hooks/useOrders";
-import type { OrderStatus } from "@/types";
+import { useOrder, useUpdateOrder } from "@/hooks/useOrders";
+import type { OrderStatus, UpdateOrderInput } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -31,7 +32,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const shouldPrint = searchParams.get("print") === "1";
 
   const { data: order, isLoading, isError } = useOrder(orderId);
+  const updateOrder = useUpdateOrder(orderId);
   const hasPrinted = useRef(false);
+  const [editing, setEditing] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     if (shouldPrint && order && !hasPrinted.current) {
@@ -39,6 +43,16 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       setTimeout(() => window.print(), 300);
     }
   }, [shouldPrint, order]);
+
+  async function handleSave(data: UpdateOrderInput) {
+    setSaveError("");
+    try {
+      await updateOrder.mutateAsync(data);
+      setEditing(false);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save changes");
+    }
+  }
 
   if (isLoading) {
     return (
@@ -66,7 +80,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       {/* Action bar — screen only */}
       <div className="flex items-center justify-between print:hidden">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="size-8" onClick={() => router.push("/orders")}>
+          <Button variant="ghost" size="icon" className="size-8" onClick={() => {
+            if (editing) setEditing(false);
+            else router.push("/orders");
+          }}>
             <ArrowLeft className="size-4" />
           </Button>
           <div>
@@ -76,18 +93,39 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         </div>
         <div className="flex items-center gap-2">
           <StatusBadge status={order.status} />
-          <PDFDownloadButton order={order} />
-          <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Printer className="size-3.5" />
-            Print
-          </Button>
+          {!editing && (
+            <>
+              <PDFDownloadButton order={order} />
+              <Button variant="outline" size="sm" onClick={() => window.print()}>
+                <Printer className="size-3.5" />
+                Print
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => { setSaveError(""); setEditing(true); }}>
+                <Pencil className="size-3.5" />
+                Edit
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Invoice — visible on screen and in print */}
-      <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm print:rounded-none print:border-0 print:shadow-none print:p-0">
-        <OrderInvoice order={order} />
-      </div>
+      {saveError && (
+        <p className="text-sm text-red-500 print:hidden">{saveError}</p>
+      )}
+
+      {editing ? (
+        <OrderEditForm
+          order={order}
+          onSave={handleSave}
+          onCancel={() => { setSaveError(""); setEditing(false); }}
+          isSaving={updateOrder.isPending}
+        />
+      ) : (
+        /* Invoice — visible on screen and in print */
+        <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm print:rounded-none print:border-0 print:shadow-none print:p-0">
+          <OrderInvoice order={order} />
+        </div>
+      )}
     </div>
   );
 }

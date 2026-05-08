@@ -7,6 +7,7 @@ import type {
 } from "@prisma/client";
 
 export type { Category, Product, Order, OrderItem, OrderStatus };
+export type { UpdateOrderInput } from "@/lib/validations/order";
 
 export type ProductWithCategory = Product & {
   category: Category | null;
