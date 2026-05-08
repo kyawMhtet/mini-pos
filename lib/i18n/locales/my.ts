@@ -107,6 +107,8 @@ export const my = {
   "products.stockLabel": "လက်ကျန်အရေအတွက် *",
   "products.categoryLabel": "အမျိုးအစား",
   "products.noCategory": "— အမျိုးအစားမရှိပါ —",
+  "products.sizeLabel": "အရွယ်အစား",
+  "products.sizePlaceholder": "ဥပမာ - 17 × 30 cm သို့မဟုတ် 6″ × 12″",
   "products.descriptionLabel": "အသေးစိတ်ဖော်ပြချက်",
   "products.descriptionPlaceholder": "ကုန်ပစ္စည်းအကြောင်း အသေးစိတ် (မဖြစ်မနေမဟုတ်ပါ)",
   "products.imageUrlLabel": "ပုံလင့်ခ် (URL)",

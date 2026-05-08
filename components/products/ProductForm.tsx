@@ -44,10 +44,11 @@ export function ProductForm({
           price: product.price,
           stock: product.stock,
           categoryId: product.categoryId ?? undefined,
+          size: product.size ?? "",
           imageUrl: product.imageUrl ?? "",
           isActive: product.isActive,
         }
-      : { name: "", sku: "", description: "", price: 0, stock: 0, categoryId: undefined, imageUrl: "", isActive: true },
+      : { name: "", sku: "", description: "", price: 0, stock: 0, categoryId: undefined, size: "", imageUrl: "", isActive: true },
   });
 
   return (
@@ -95,6 +96,12 @@ export function ProductForm({
             <option value="false">{t("state.inactive")}</option>
           </Select>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="size">{t("products.sizeLabel")}</Label>
+        <Input id="size" placeholder={t("products.sizePlaceholder")} {...register("size")} />
+        {errors.size && <p className="text-xs text-red-500">{errors.size.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">

@@ -107,6 +107,8 @@ export const en = {
   "products.stockLabel": "Stock *",
   "products.categoryLabel": "Category",
   "products.noCategory": "— No category —",
+  "products.sizeLabel": "Size",
+  "products.sizePlaceholder": "e.g. 17 × 30 cm or 6″ × 12″",
   "products.descriptionLabel": "Description",
   "products.descriptionPlaceholder": "Optional product description",
   "products.imageUrlLabel": "Image URL",

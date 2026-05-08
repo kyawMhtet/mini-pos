@@ -54,7 +54,9 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
               <tr key={p.id} className="transition-colors hover:bg-blue-50/40">
                 <td className="px-5 py-4">
                   <p className="font-medium text-gray-900">{p.name}</p>
-                  {p.category && <p className="mt-0.5 text-xs text-gray-400">{p.category.name}</p>}
+                  <p className="mt-0.5 text-xs text-gray-400">
+                    {[p.category?.name, p.size].filter(Boolean).join(" · ")}
+                  </p>
                 </td>
                 <td className="px-5 py-4">
                   <code className="rounded-md border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs font-mono text-gray-600">
