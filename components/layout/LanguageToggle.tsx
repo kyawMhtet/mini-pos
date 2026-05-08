@@ -8,7 +8,7 @@ export function LanguageToggle({ className }: { className?: string }) {
   return (
     <button
       onClick={() => setLocale(locale === "en" ? "my" : "en")}
-      className={`text-xs font-medium px-2.5 py-1 rounded-md border transition-colors ${className ?? ""}`}
+      className={`text-xs font-medium px-2.5 py-1 rounded-md border transition-colors cursor-pointer ${className ?? ""}`}
       title={locale === "en" ? "Switch to Myanmar" : "Switch to English"}
     >
       {locale === "en" ? "မြန်မာ" : "English"}

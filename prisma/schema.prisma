@@ -27,6 +27,7 @@ model Product {
   price       Float
   stock       Int         @default(0)
   imageUrl    String?
+  size        String?
   isActive    Boolean     @default(true)
   category    Category?   @relation(fields: [categoryId], references: [id])
   categoryId  Int?

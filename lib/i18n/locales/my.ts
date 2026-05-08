@@ -97,7 +97,7 @@ export const my = {
   "products.title": "ကုန်ပစ္စည်းများ",
   "products.failedToLoad": "ကုန်ပစ္စည်းများ ဆွဲ၍မရပါ။",
   "products.noProductsFound": "ကုန်ပစ္စည်း ရှာမတွေ့ပါ။",
-  "products.noProductsHint": "ဖန်တာပြောင်းကြည့်ပါ သို့မဟုတ် ကုန်ပစ္စည်းအသစ် ထည့်ကြည့်ပါ။",
+  "products.noProductsHint": "filter ပြောင်းကြည့်ပါ သို့မဟုတ် ကုန်ပစ္စည်းအသစ် ထည့်ကြည့်ပါ။",
   "products.addDescription": "ကုန်ပစ္စည်းအသစ် ထည့်သွင်းရန် အောက်ပါအချက်အလက်များကို ဖြည့်စွက်ပေးပါ။",
   "products.nameLabel": "အမည် *",
   "products.namePlaceholder": "ဥပမာ - အအေးခံအိတ် M",
