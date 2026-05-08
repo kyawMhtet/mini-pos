@@ -4,6 +4,7 @@ import { productSchema } from "@/lib/validations/product";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

@@ -11,6 +11,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  // Protect everything except login, NextAuth API, static files, and images
   matcher: ["/((?!login|api/auth|_next/static|_next/image|favicon.ico).*)"],
 };

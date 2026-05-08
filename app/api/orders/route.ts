@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { customerName, note, discount, items } = createOrderSchema.parse(body);
 
-    const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const order = await prisma.$transaction(async (tx) => {
       // Daily sequence for order number
       const today = new Date();
       today.setHours(0, 0, 0, 0);
