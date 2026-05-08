@@ -40,53 +40,72 @@ export async function PUT(request: NextRequest, { params }: Params) {
     const body = await request.json();
     const data = updateOrderSchema.parse(body);
 
-    const order = await prisma.$transaction(async (tx) => {
-      const existing = await tx.order.findUnique({
-        where: { id },
-        include: { orderItems: true },
+    // Read existing order outside the transaction to reduce time spent inside it
+    const existing = await prisma.order.findUnique({
+      where: { id },
+      include: { orderItems: true },
+    });
+    if (!existing) return Response.json({ error: "Order not found" }, { status: 404 });
+
+    const wasActive = existing.status !== "CANCELLED";
+    const newStatus = data.status ?? existing.status;
+    const willBeActive = newStatus !== "CANCELLED";
+
+    const finalItems = data.items ?? existing.orderItems.map((i) => ({
+      productId: i.productId,
+      quantity: i.quantity,
+      unitPrice: i.unitPrice,
+    }));
+
+    const oldDeductions = new Map<number, number>();
+    if (wasActive) {
+      for (const item of existing.orderItems) {
+        oldDeductions.set(item.productId, (oldDeductions.get(item.productId) ?? 0) + item.quantity);
+      }
+    }
+
+    const newDeductions = new Map<number, number>();
+    if (willBeActive) {
+      for (const item of finalItems) {
+        newDeductions.set(item.productId, (newDeductions.get(item.productId) ?? 0) + item.quantity);
+      }
+    }
+
+    const allProductIds = new Set([...oldDeductions.keys(), ...newDeductions.keys()]);
+    const deltas = new Map<number, number>();
+    for (const productId of allProductIds) {
+      const delta = (oldDeductions.get(productId) ?? 0) - (newDeductions.get(productId) ?? 0);
+      if (delta !== 0) deltas.set(productId, delta);
+    }
+
+    // Validate stock for products that need more than they currently have
+    const productIdsNeedingMore = [...deltas.entries()]
+      .filter(([, delta]) => delta < 0)
+      .map(([id]) => id);
+
+    if (productIdsNeedingMore.length > 0) {
+      const products = await prisma.product.findMany({
+        where: { id: { in: productIdsNeedingMore } },
+        select: { id: true, name: true, stock: true },
       });
-      if (!existing) throw new Error("ORDER_NOT_FOUND");
-
-      const wasActive = existing.status !== "CANCELLED";
-      const newStatus = data.status ?? existing.status;
-      const willBeActive = newStatus !== "CANCELLED";
-
-      const finalItems = data.items ?? existing.orderItems.map((i) => ({
-        productId: i.productId,
-        quantity: i.quantity,
-        unitPrice: i.unitPrice,
-      }));
-
-      // Build stock deduction maps (what each order state "owns" from inventory)
-      const oldDeductions = new Map<number, number>();
-      if (wasActive) {
-        for (const item of existing.orderItems) {
-          oldDeductions.set(item.productId, (oldDeductions.get(item.productId) ?? 0) + item.quantity);
+      for (const product of products) {
+        const delta = deltas.get(product.id)!;
+        if (product.stock < -delta) {
+          return Response.json(
+            { error: `Insufficient stock for "${product.name}" (available: ${product.stock}, need ${-delta} more)` },
+            { status: 422 }
+          );
         }
       }
+    }
 
-      const newDeductions = new Map<number, number>();
-      if (willBeActive) {
-        for (const item of finalItems) {
-          newDeductions.set(item.productId, (newDeductions.get(item.productId) ?? 0) + item.quantity);
-        }
-      }
+    const discount = data.discount ?? existing.discount;
+    const subtotal = finalItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
+    const total = Math.max(0, subtotal - discount);
 
-      // Apply net stock deltas
-      const allProductIds = new Set([...oldDeductions.keys(), ...newDeductions.keys()]);
-      for (const productId of allProductIds) {
-        const delta = (oldDeductions.get(productId) ?? 0) - (newDeductions.get(productId) ?? 0);
-        if (delta === 0) continue;
-
-        if (delta < 0) {
-          const product = await tx.product.findUniqueOrThrow({ where: { id: productId } });
-          if (product.stock < -delta) {
-            throw new Error(
-              `Insufficient stock for "${product.name}" (available: ${product.stock}, need ${-delta} more)`
-            );
-          }
-        }
-
+    const order = await prisma.$transaction(async (tx) => {
+      // Apply stock deltas
+      for (const [productId, delta] of deltas) {
         await tx.product.update({
           where: { id: productId },
           data: { stock: { increment: delta } },
@@ -104,10 +123,6 @@ export async function PUT(request: NextRequest, { params }: Params) {
           })),
         });
       }
-
-      const discount = data.discount ?? existing.discount;
-      const subtotal = finalItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-      const total = Math.max(0, subtotal - discount);
 
       return tx.order.update({
         where: { id },
@@ -138,9 +153,6 @@ export async function PUT(request: NextRequest, { params }: Params) {
       return Response.json({ error: "Order not found" }, { status: 404 });
     }
     const message = error instanceof Error ? error.message : "Unknown error";
-    if (message === "ORDER_NOT_FOUND") {
-      return Response.json({ error: "Order not found" }, { status: 404 });
-    }
     console.error("[PUT /api/orders/:id]", message);
     return Response.json({ error: message }, { status: 500 });
   }

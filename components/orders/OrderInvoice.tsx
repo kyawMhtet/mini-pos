@@ -45,6 +45,14 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
         </div>
       )}
 
+      {order.status === "CANCELLED" && (
+        <div className="mb-6 rounded-md border border-red-200 bg-red-50 py-2 text-center">
+          <span className="text-sm font-bold uppercase tracking-widest text-red-600">
+            {t("invoice.cancelled")}
+          </span>
+        </div>
+      )}
+
       {order.note && (
         <div className="mb-6">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">{t("label.note")}</p>
@@ -96,7 +104,7 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
       </div>
 
       <div className="border-t border-gray-200 pt-6 text-center text-sm text-gray-400">
-        {t("invoice.thankYou")}
+        {order.status === "CANCELLED" ? t("invoice.cancelledNote") : t("invoice.thankYou")}
       </div>
     </div>
   );

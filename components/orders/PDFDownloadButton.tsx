@@ -23,6 +23,7 @@ export function PDFDownloadButton({ order }: Props) {
         import("./OrderInvoicePDF"),
       ]);
 
+      const isCancelled = order.status === "CANCELLED";
       const labels: PDFLabels = {
         invoice: t("invoice.title"),
         billTo:  t("invoice.billTo"),
@@ -35,6 +36,10 @@ export function PDFDownloadButton({ order }: Props) {
         discount: t("label.discountLine"),
         total:   t("label.total"),
         thankYou: t("invoice.thankYou"),
+        ...(isCancelled && {
+          cancelled: t("invoice.cancelled"),
+          cancelledNote: t("invoice.cancelledNote"),
+        }),
       };
 
       const blob = await pdf(<OrderInvoicePDF order={order} labels={labels} />).toBlob();

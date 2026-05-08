@@ -161,6 +161,8 @@ export const en = {
   "invoice.title": "Invoice",
   "invoice.billTo": "Bill To",
   "invoice.thankYou": "Thank you for your business!",
+  "invoice.cancelled": "CANCELLED",
+  "invoice.cancelledNote": "This order has been cancelled.",
 
   // Stock
   "stock.title": "Stock",

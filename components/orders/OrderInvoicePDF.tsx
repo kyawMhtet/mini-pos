@@ -43,6 +43,8 @@ const s = StyleSheet.create({
   grandLabel:  { fontSize: 12, fontWeight: "bold", color: "#111827" },
   grandValue:  { fontSize: 12, fontWeight: "bold", color: "#111827" },
   footer:      { borderTopWidth: 1, borderTopColor: "#e5e7eb", borderTopStyle: "solid", paddingTop: 16, textAlign: "center", fontSize: 9, color: "#9ca3af" },
+  cancelBanner:{ borderWidth: 1, borderColor: "#fecaca", borderStyle: "solid", backgroundColor: "#fef2f2", borderRadius: 4, paddingVertical: 6, marginBottom: 16, alignItems: "center" },
+  cancelText:  { fontSize: 11, fontWeight: "bold", color: "#dc2626", letterSpacing: 2, textTransform: "uppercase" },
 });
 
 export type PDFLabels = {
@@ -57,6 +59,8 @@ export type PDFLabels = {
   discount: string;
   total: string;
   thankYou: string;
+  cancelled?: string;
+  cancelledNote?: string;
 };
 
 interface Props {
@@ -85,6 +89,12 @@ export function OrderInvoicePDF({ order, labels }: Props) {
             <Text style={s.invoiceDate}>{fmtDate(order.createdAt)}</Text>
           </View>
         </View>
+
+        {labels.cancelled ? (
+          <View style={s.cancelBanner}>
+            <Text style={s.cancelText}>{labels.cancelled}</Text>
+          </View>
+        ) : null}
 
         {order.customerName ? (
           <View style={s.section}>
@@ -141,7 +151,7 @@ export function OrderInvoicePDF({ order, labels }: Props) {
         </View>
 
         <View style={s.footer}>
-          <Text>{labels.thankYou}</Text>
+          <Text>{labels.cancelled ? labels.cancelledNote : labels.thankYou}</Text>
         </View>
       </Page>
     </Document>

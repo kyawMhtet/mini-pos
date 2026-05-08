@@ -161,6 +161,8 @@ export const my = {
   "invoice.title": "ဘောင်ချာ",
   "invoice.billTo": "ဝယ်ယူသူ",
   "invoice.thankYou": "ဝယ်ယူအားပေးမှုကို အထူးကျေးဇူးတင်ရှိပါသည်။",
+  "invoice.cancelled": "ပယ်ဖျက်ပြီး",
+  "invoice.cancelledNote": "ဤအမှာစာကို ပယ်ဖျက်ပြီးဖြစ်သည်။",
 
   // Stock
   "stock.title": "ပစ္စည်းလက်ကျန်",
