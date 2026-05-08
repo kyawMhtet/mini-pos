@@ -12,7 +12,8 @@ const loginSchema = z.object({
 });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  adapter: PrismaAdapter(prisma as any),
   session: { strategy: "jwt" },
   ...authConfig,
   providers: [
@@ -21,42 +22,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-async authorize(credentials) {
-  const parsed = loginSchema.safeParse(credentials);
+      async authorize(credentials) {
+        const parsed = loginSchema.safeParse(credentials);
+        if (!parsed.success) return null;
 
-  console.log(parsed);
+        const user = await prisma.user.findUnique({
+          where: { email: parsed.data.email },
+          select: { id: true, email: true, name: true, password: true },
+        });
 
-  if (!parsed.success) return null;
+        if (!user?.password) return null;
 
-  const user = await prisma.user.findUnique({
-    where: { email: parsed.data.email },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      password: true,
-    },
-  });
+        const valid = await bcrypt.compare(parsed.data.password, user.password);
+        if (!valid) return null;
 
-  console.log(user);
-
-  if (!user?.password) return null;
-
-  const valid = await bcrypt.compare(
-    parsed.data.password,
-    user.password
-  );
-
-  console.log(valid);
-
-  if (!valid) return null;
-
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-  };
-}
+        return { id: user.id, email: user.email, name: user.name };
+      },
     }),
   ],
   callbacks: {
