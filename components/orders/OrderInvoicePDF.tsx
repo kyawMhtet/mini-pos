@@ -69,7 +69,7 @@ interface Props {
 }
 
 export function OrderInvoicePDF({ order, labels }: Props) {
-  const storeName    = process.env.NEXT_PUBLIC_STORE_NAME    ?? "Mini POS";
+  const storeName    = process.env.NEXT_PUBLIC_STORE_NAME    ?? "Diva Delivery Bag";
   const storeAddress = process.env.NEXT_PUBLIC_STORE_ADDRESS ?? "";
   const storePhone   = process.env.NEXT_PUBLIC_STORE_PHONE   ?? "";
   const subtotal = order.orderItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);

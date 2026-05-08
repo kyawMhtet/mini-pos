@@ -99,9 +99,10 @@
 
 @media print {
   @page {
-    margin: 0;
+    size: A4;
+    margin: 1.2cm 1.5cm;
   }
   body {
-    padding: 1.5cm;
+    padding: 0;
   }
 }
