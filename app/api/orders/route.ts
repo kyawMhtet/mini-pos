@@ -61,8 +61,15 @@ export async function POST(request: NextRequest) {
       const m = String(now.getMonth() + 1).padStart(2, "0");
       const d = String(now.getDate()).padStart(2, "0");
       const dateKey = `${y}-${m}-${d}`;
-      const [counter] = await tx.$queryRaw<[{ value: number }]>`
-        INSERT INTO "DailyCounter" (date, value) VALUES (${dateKey}, 1)
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+      // On first use each day, seed from the actual order count so existing orders aren't re-used
+      const [counter] = await tx.$queryRaw<[{ value: bigint }]>`
+        INSERT INTO "DailyCounter" (date, value)
+        VALUES (
+          ${dateKey},
+          (SELECT COUNT(*) + 1 FROM "Order" WHERE "createdAt" >= ${todayStart})
+        )
         ON CONFLICT (date) DO UPDATE SET value = "DailyCounter".value + 1
         RETURNING value
       `;
