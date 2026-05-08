@@ -10,38 +10,14 @@ import {
   Boxes,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT, type TKey } from "@/lib/i18n";
 
-const links = [
-  {
-    href: "/",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    isActive: (p: string) => p === "/",
-  },
-  {
-    href: "/new-order",
-    label: "New Order",
-    icon: ShoppingCart,
-    isActive: (p: string) => p === "/new-order",
-  },
-  {
-    href: "/orders",
-    label: "Orders",
-    icon: ClipboardList,
-    isActive: (p: string) => p.startsWith("/orders"),
-  },
-  {
-    href: "/products",
-    label: "Products",
-    icon: Package,
-    isActive: (p: string) => p.startsWith("/products"),
-  },
-  {
-    href: "/stock",
-    label: "Stock",
-    icon: Boxes,
-    isActive: (p: string) => p.startsWith("/stock"),
-  },
+const links: { href: string; labelKey: TKey; icon: React.ElementType; isActive: (p: string) => boolean }[] = [
+  { href: "/",         labelKey: "nav.dashboard", icon: LayoutDashboard, isActive: (p) => p === "/" },
+  { href: "/new-order",labelKey: "nav.newOrder",  icon: ShoppingCart,    isActive: (p) => p === "/new-order" },
+  { href: "/orders",   labelKey: "nav.orders",    icon: ClipboardList,   isActive: (p) => p.startsWith("/orders") },
+  { href: "/products", labelKey: "nav.products",  icon: Package,         isActive: (p) => p.startsWith("/products") },
+  { href: "/stock",    labelKey: "nav.stock",     icon: Boxes,           isActive: (p) => p.startsWith("/stock") },
 ];
 
 interface NavLinksProps {
@@ -50,10 +26,11 @@ interface NavLinksProps {
 
 export function NavLinks({ onNavigate }: NavLinksProps) {
   const pathname = usePathname();
+  const { t } = useT();
 
   return (
     <nav className="flex flex-col gap-0.5 px-3">
-      {links.map(({ href, label, icon: Icon, isActive }) => (
+      {links.map(({ href, labelKey, icon: Icon, isActive }) => (
         <Link
           key={href}
           href={href}
@@ -66,7 +43,7 @@ export function NavLinks({ onNavigate }: NavLinksProps) {
           )}
         >
           <Icon className="size-4 shrink-0" />
-          <span>{label}</span>
+          <span>{t(labelKey)}</span>
         </Link>
       ))}
     </nav>

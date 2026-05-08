@@ -1,21 +1,25 @@
+"use client";
+
 import { Package } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 interface Props {
   products: { name: string; qtySold: number }[];
 }
 
 export function TopProducts({ products }: Props) {
+  const { t } = useT();
   const max = products[0]?.qtySold ?? 1;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-900">Top Products</h2>
-        <p className="text-xs text-gray-400 mt-0.5">By qty sold this month</p>
+        <h2 className="text-sm font-semibold text-gray-900">{t("dashboard.topProducts")}</h2>
+        <p className="text-xs text-gray-400 mt-0.5">{t("dashboard.topProductsSubtitle")}</p>
       </div>
 
       {products.length === 0 ? (
-        <p className="px-5 py-8 text-center text-sm text-gray-400">No sales this month.</p>
+        <p className="px-5 py-8 text-center text-sm text-gray-400">{t("dashboard.noSalesThisMonth")}</p>
       ) : (
         <div className="flex flex-col gap-0 divide-y divide-gray-100">
           {products.map((p, i) => (

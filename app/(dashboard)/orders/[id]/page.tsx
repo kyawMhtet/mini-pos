@@ -9,6 +9,7 @@ import { OrderInvoice } from "@/components/orders/OrderInvoice";
 import { OrderEditForm } from "@/components/orders/OrderEditForm";
 import { PDFDownloadButton } from "@/components/orders/PDFDownloadButton";
 import { useOrder, useUpdateOrder } from "@/hooks/useOrders";
+import { useT } from "@/lib/i18n";
 import type { OrderStatus, UpdateOrderInput } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -19,9 +20,10 @@ function formatDateTime(date: string | Date) {
 }
 
 function StatusBadge({ status }: { status: OrderStatus }) {
-  if (status === "COMPLETED") return <Badge variant="success">Completed</Badge>;
-  if (status === "CANCELLED") return <Badge variant="destructive">Cancelled</Badge>;
-  return <Badge variant="warning">Pending</Badge>;
+  const { t } = useT();
+  if (status === "COMPLETED") return <Badge variant="success">{t("status.completed")}</Badge>;
+  if (status === "CANCELLED") return <Badge variant="destructive">{t("status.cancelled")}</Badge>;
+  return <Badge variant="warning">{t("status.pending")}</Badge>;
 }
 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,6 +32,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const searchParams = useSearchParams();
   const shouldPrint = searchParams.get("print") === "1";
+  const { t } = useT();
 
   const { data: order, isLoading, isError } = useOrder(orderId);
   const updateOrder = useUpdateOrder(orderId);
@@ -58,7 +61,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     return (
       <div className="flex items-center justify-center py-24 text-sm text-gray-400">
         <Loader2 className="mr-2 size-4 animate-spin" />
-        Loading order…
+        {t("orders.loadingOrder")}
       </div>
     );
   }
@@ -66,10 +69,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (isError || !order) {
     return (
       <div className="flex flex-col items-center gap-3 py-24">
-        <p className="text-sm text-red-500">Order not found.</p>
+        <p className="text-sm text-red-500">{t("orders.notFound")}</p>
         <Button variant="outline" size="sm" onClick={() => router.push("/orders")}>
           <ArrowLeft className="size-3.5" />
-          Back to Orders
+          {t("action.backToOrders")}
         </Button>
       </div>
     );
@@ -77,7 +80,6 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="mx-auto max-w-2xl flex flex-col gap-6">
-      {/* Action bar — screen only */}
       <div className="flex items-center justify-between print:hidden">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" className="size-8" onClick={() => {
@@ -98,20 +100,18 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <PDFDownloadButton order={order} />
               <Button variant="outline" size="sm" onClick={() => window.print()}>
                 <Printer className="size-3.5" />
-                Print
+                {t("action.print")}
               </Button>
               <Button variant="outline" size="sm" onClick={() => { setSaveError(""); setEditing(true); }}>
                 <Pencil className="size-3.5" />
-                Edit
+                {t("action.edit")}
               </Button>
             </>
           )}
         </div>
       </div>
 
-      {saveError && (
-        <p className="text-sm text-red-500 print:hidden">{saveError}</p>
-      )}
+      {saveError && <p className="text-sm text-red-500 print:hidden">{saveError}</p>}
 
       {editing ? (
         <OrderEditForm
@@ -121,7 +121,6 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           isSaving={updateOrder.isPending}
         />
       ) : (
-        /* Invoice — visible on screen and in print */
         <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm print:rounded-none print:border-0 print:shadow-none print:p-0">
           <OrderInvoice order={order} />
         </div>

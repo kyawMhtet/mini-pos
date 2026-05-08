@@ -2,7 +2,7 @@ import { Store } from "lucide-react";
 import { NavLinks } from "./nav-links";
 
 export function Sidebar() {
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Mini POS";
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Diva Delivery Bag";
 
   return (
     <aside

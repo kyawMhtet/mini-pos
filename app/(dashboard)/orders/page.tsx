@@ -8,6 +8,7 @@ import { OrderTable } from "@/components/orders/OrderTable";
 import { Pagination } from "@/components/ui/pagination";
 import { useOrders } from "@/hooks/useOrders";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useT } from "@/lib/i18n";
 
 const PAGE_SIZE = 10;
 
@@ -16,86 +17,56 @@ export default function OrdersPage() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
+  const { t, plural } = useT();
 
   const debouncedSearch = useDebounce(search, 300);
-
-  const { data, isLoading, isError, refetch } = useOrders({
-    search: debouncedSearch,
-    from: dateFrom,
-    to: dateTo,
-    page,
-    pageSize: PAGE_SIZE,
-  });
+  const { data, isLoading, isError, refetch } = useOrders({ search: debouncedSearch, from: dateFrom, to: dateTo, page, pageSize: PAGE_SIZE });
 
   const orders = data?.items ?? [];
   const total = data?.total ?? 0;
   const totalPages = data?.totalPages ?? 1;
 
-  function handleSearchChange(value: string) {
-    setSearch(value);
-    setPage(1);
-  }
-
+  function handleSearchChange(value: string) { setSearch(value); setPage(1); }
   function handleDateChange(field: "from" | "to", value: string) {
     field === "from" ? setDateFrom(value) : setDateTo(value);
     setPage(1);
   }
-
-  function clearFilters() {
-    setSearch("");
-    setDateFrom("");
-    setDateTo("");
-    setPage(1);
-  }
+  function clearFilters() { setSearch(""); setDateFrom(""); setDateTo(""); setPage(1); }
 
   const hasFilters = search || dateFrom || dateTo;
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Orders</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{t("orders.title")}</h1>
         <p className="mt-0.5 text-sm text-gray-500">
-          {isLoading ? "Loading…" : `${total} order${total !== 1 ? "s" : ""}`}
+          {isLoading ? t("state.loading") : plural(total, "unit.order", "unit.orders")}
         </p>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative w-full sm:flex-1 sm:min-w-52">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
           <Input
-            placeholder="Search order # or customer…"
+            placeholder={t("orders.searchPlaceholder")}
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-9"
           />
         </div>
-
         <div className="flex items-center gap-2">
-          <Input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => handleDateChange("from", e.target.value)}
-            className="flex-1 sm:w-36 text-sm"
-          />
-          <span className="text-xs text-gray-400 shrink-0">to</span>
-          <Input
-            type="date"
-            value={dateTo}
-            onChange={(e) => handleDateChange("to", e.target.value)}
-            className="flex-1 sm:w-36 text-sm"
-          />
+          <Input type="date" value={dateFrom} onChange={(e) => handleDateChange("from", e.target.value)} className="flex-1 sm:w-36 text-sm" />
+          <span className="text-xs text-gray-400 shrink-0">{t("label.to")}</span>
+          <Input type="date" value={dateTo} onChange={(e) => handleDateChange("to", e.target.value)} className="flex-1 sm:w-36 text-sm" />
           {hasFilters && (
             <Button variant="outline" size="sm" onClick={clearFilters} className="shrink-0">
               <X className="size-3.5" />
-              Clear
+              {t("action.clear")}
             </Button>
           )}
         </div>
       </div>
 
-      {/* Table */}
       {isLoading && (
         <div className="rounded-xl border bg-white">
           <div className="divide-y">
@@ -112,10 +83,10 @@ export default function OrdersPage() {
 
       {isError && (
         <div className="flex flex-col items-center gap-3 rounded-xl border bg-white py-16">
-          <p className="text-sm text-red-500">Failed to load orders.</p>
+          <p className="text-sm text-red-500">{t("orders.failedToLoad")}</p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="size-3.5" />
-            Retry
+            {t("action.retry")}
           </Button>
         </div>
       )}
@@ -124,13 +95,7 @@ export default function OrdersPage() {
         <div className="flex flex-col gap-4">
           <OrderTable orders={orders} />
           {totalPages > 1 && (
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              total={total}
-              pageSize={PAGE_SIZE}
-              onChange={setPage}
-            />
+            <Pagination page={page} totalPages={totalPages} total={total} pageSize={PAGE_SIZE} onChange={setPage} />
           )}
         </div>
       )}

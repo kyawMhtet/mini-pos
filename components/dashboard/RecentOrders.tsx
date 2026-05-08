@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
+import { useT } from "@/lib/i18n";
 import type { OrderSummary, OrderStatus } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -12,9 +15,10 @@ function formatDate(date: string | Date) {
 }
 
 function StatusBadge({ status }: { status: OrderStatus }) {
-  if (status === "COMPLETED") return <Badge variant="success">Completed</Badge>;
-  if (status === "CANCELLED") return <Badge variant="destructive">Cancelled</Badge>;
-  return <Badge variant="warning">Pending</Badge>;
+  const { t } = useT();
+  if (status === "COMPLETED") return <Badge variant="success">{t("status.completed")}</Badge>;
+  if (status === "CANCELLED") return <Badge variant="destructive">{t("status.cancelled")}</Badge>;
+  return <Badge variant="warning">{t("status.pending")}</Badge>;
 }
 
 interface Props {
@@ -22,17 +26,19 @@ interface Props {
 }
 
 export function RecentOrders({ orders }: Props) {
+  const { t, plural } = useT();
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-900">Recent Orders</h2>
+        <h2 className="text-sm font-semibold text-gray-900">{t("dashboard.recentOrders")}</h2>
         <Link href="/orders" className="flex items-center gap-1 text-xs text-blue-600 hover:underline">
-          View all <ArrowRight className="size-3" />
+          {t("action.viewAll")} <ArrowRight className="size-3" />
         </Link>
       </div>
 
       {orders.length === 0 ? (
-        <p className="px-5 py-8 text-center text-sm text-gray-400">No orders yet.</p>
+        <p className="px-5 py-8 text-center text-sm text-gray-400">{t("dashboard.noOrdersYet")}</p>
       ) : (
         <div className="divide-y divide-gray-100">
           {orders.map((o) => (
@@ -44,7 +50,7 @@ export function RecentOrders({ orders }: Props) {
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-mono font-semibold text-gray-900">{o.orderNumber}</p>
                 <p className="text-xs text-gray-400 truncate">
-                  {o.customerName ?? "—"} · {o._count.orderItems} item{o._count.orderItems !== 1 ? "s" : ""}
+                  {o.customerName ?? "—"} · {plural(o._count.orderItems, "unit.item", "unit.items")}
                 </p>
               </div>
               <div className="text-right shrink-0">

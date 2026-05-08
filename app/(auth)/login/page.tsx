@@ -7,9 +7,12 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { useT } from "@/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useT();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,9 +29,9 @@ export default function LoginPage() {
 
     if (result?.error) {
       if (result.error === "CredentialsSignin") {
-        setError("Invalid email or password.");
+        setError(t("auth.invalidCredentials"));
       } else {
-        setError(`Sign-in error: ${result.error}`);
+        setError(`${t("auth.signInErrorPrefix")} ${result.error}`);
       }
       setLoading(false);
     } else {
@@ -43,32 +46,32 @@ export default function LoginPage() {
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-bold text-gray-900">{storeName}</h1>
-        <p className="mt-1 text-sm text-gray-500">Sign in to continue</p>
+        <p className="mt-1 text-sm text-gray-500">{t("auth.signInToContinue")}</p>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("auth.email")}</Label>
             <Input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
               required
-              placeholder="you@example.com"
+              placeholder={t("auth.emailPlaceholder")}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("auth.password")}</Label>
             <Input
               id="password"
               name="password"
               type="password"
               autoComplete="current-password"
               required
-              placeholder="••••••••"
+              placeholder={t("auth.passwordPlaceholder")}
             />
           </div>
 
@@ -80,9 +83,13 @@ export default function LoginPage() {
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="size-4 animate-spin" />}
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? t("auth.signingIn") : t("auth.signIn")}
           </Button>
         </form>
+      </div>
+
+      <div className="mt-4 flex justify-center">
+        <LanguageToggle className="border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-700" />
       </div>
     </div>
   );
