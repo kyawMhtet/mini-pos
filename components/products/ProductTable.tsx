@@ -43,7 +43,8 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
             <tr className="border-b border-gray-100 bg-gray-50/80">
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.product")}</th>
               <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.sku")}</th>
-              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.priceKyats")}</th>
+              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.buyingPrice")}</th>
+              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.sellPrice")}</th>
               <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.stock")}</th>
               <th className="w-24 px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.status")}</th>
               <th className="w-24 px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">{t("table.actions")}</th>
@@ -63,6 +64,7 @@ export function ProductTable({ products, onEdit }: ProductTableProps) {
                     {p.sku}
                   </code>
                 </td>
+                <td className="px-5 py-4 text-right text-gray-500">{formatCurrency(p.buyingPrice)}</td>
                 <td className="px-5 py-4 text-right font-semibold text-gray-900">{formatCurrency(p.price)}</td>
                 <td className="px-5 py-4 text-right">
                   <span className={

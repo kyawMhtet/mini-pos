@@ -43,6 +43,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
         name: data.name,
         sku: data.sku,
         description: data.description ?? null,
+        buyingPrice: data.buyingPrice,
         price: data.price,
         stock: data.stock,
         size: data.size || null,

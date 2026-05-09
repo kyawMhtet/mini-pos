@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "buyingPrice" DOUBLE PRECISION NOT NULL DEFAULT 0;

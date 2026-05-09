@@ -41,6 +41,7 @@ export function ProductForm({
           name: product.name,
           sku: product.sku,
           description: product.description ?? "",
+          buyingPrice: product.buyingPrice,
           price: product.price,
           stock: product.stock,
           categoryId: product.categoryId ?? undefined,
@@ -48,7 +49,7 @@ export function ProductForm({
           imageUrl: product.imageUrl ?? "",
           isActive: product.isActive,
         }
-      : { name: "", sku: "", description: "", price: 0, stock: 0, categoryId: undefined, size: "", imageUrl: "", isActive: true },
+      : { name: "", sku: "", description: "", buyingPrice: 0, price: 0, stock: 0, categoryId: undefined, size: "", imageUrl: "", isActive: true },
   });
 
   return (
@@ -66,7 +67,12 @@ export function ProductForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="buyingPrice">{t("products.buyingPriceLabel")}</Label>
+          <Input id="buyingPrice" type="number" min={0} step={0.01} placeholder="0" {...register("buyingPrice", { valueAsNumber: true })} />
+          {errors.buyingPrice && <p className="text-xs text-red-500">{errors.buyingPrice.message}</p>}
+        </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="price">{t("products.priceLabel")}</Label>
           <Input id="price" type="number" min={0} step={0.01} placeholder="0" {...register("price", { valueAsNumber: true })} />
