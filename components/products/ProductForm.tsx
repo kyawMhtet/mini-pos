@@ -33,6 +33,8 @@ export function ProductForm({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProductInput>({
     resolver: zodResolver(productSchema),
@@ -97,7 +99,11 @@ export function ProductForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="isActive">{t("label.status")}</Label>
-          <Select id="isActive" {...register("isActive", { setValueAs: (v) => v === "true" })}>
+          <Select
+            id="isActive"
+            value={watch("isActive") ? "true" : "false"}
+            onChange={(e) => setValue("isActive", e.target.value === "true")}
+          >
             <option value="true">{t("state.active")}</option>
             <option value="false">{t("state.inactive")}</option>
           </Select>
