@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { customerName, note, discount, items } = createOrderSchema.parse(body);
+    const { customerName, note, discount, paymentMethod, items } = createOrderSchema.parse(body);
 
     const order = await prisma.$transaction(async (tx) => {
       const now = new Date();
@@ -99,6 +99,7 @@ export async function POST(request: NextRequest) {
           discount,
           total,
           status: "COMPLETED",
+          paymentMethod,
           orderItems: {
             create: items.map((i) => ({
               productId: i.productId,

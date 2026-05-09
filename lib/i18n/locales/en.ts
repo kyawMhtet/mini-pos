@@ -162,6 +162,14 @@ export const en = {
   "productGrid.lowStock": "Low: ",
   "productGrid.inStock": "in stock",
 
+  // Payment methods
+  "payment.label": "Payment Method",
+  "payment.kpay": "K Pay",
+  "payment.kbzBanking": "KBZ Banking",
+  "payment.ayaBanking": "AYA Banking",
+  "payment.waveMoney": "Wave Money",
+  "payment.cash": "Cash",
+
   // Invoice
   "invoice.title": "Invoice",
   "invoice.billTo": "Bill To",

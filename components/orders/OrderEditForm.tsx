@@ -10,7 +10,7 @@ import { Select } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils";
 import { useAllActiveProducts } from "@/hooks/useProducts";
 import { useT } from "@/lib/i18n";
-import type { OrderWithItems, OrderStatus } from "@/types";
+import type { OrderWithItems, OrderStatus, PaymentMethod } from "@/types";
 import type { UpdateOrderInput } from "@/lib/validations/order";
 
 type EditItem = {
@@ -34,6 +34,7 @@ export function OrderEditForm({ order, onSave, onCancel, isSaving }: Props) {
   const [note, setNote] = useState(order.note ?? "");
   const [discount, setDiscount] = useState(String(order.discount));
   const [status, setStatus] = useState<OrderStatus>(order.status);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(order.paymentMethod);
   const [items, setItems] = useState<EditItem[]>(
     order.orderItems.map((i) => ({
       productId: i.product.id,
@@ -89,6 +90,7 @@ export function OrderEditForm({ order, onSave, onCancel, isSaving }: Props) {
       note: note.trim() || null,
       discount: discountNum,
       status,
+      paymentMethod,
       items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, unitPrice: i.unitPrice })),
     });
   }
@@ -117,6 +119,16 @@ export function OrderEditForm({ order, onSave, onCancel, isSaving }: Props) {
             <Input id="discount" type="number" min="0" step="1" value={discount} onChange={(e) => setDiscount(e.target.value)} />
           </div>
           <div className="flex flex-col gap-1.5">
+            <Label htmlFor="paymentMethod">{t("payment.label")}</Label>
+            <Select id="paymentMethod" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}>
+              <option value="CASH">{t("payment.cash")}</option>
+              <option value="KPAY">{t("payment.kpay")}</option>
+              <option value="KBZ_BANKING">{t("payment.kbzBanking")}</option>
+              <option value="AYA_BANKING">{t("payment.ayaBanking")}</option>
+              <option value="WAVE_MONEY">{t("payment.waveMoney")}</option>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5 col-span-2">
             <Label htmlFor="note">{t("label.note")}</Label>
             <Textarea id="note" placeholder={t("state.optional")} rows={1} value={note} onChange={(e) => setNote(e.target.value)} />
           </div>

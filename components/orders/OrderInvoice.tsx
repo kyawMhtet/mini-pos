@@ -6,6 +6,14 @@ import type { OrderWithItems } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  CASH: "Cash",
+  KPAY: "K Pay",
+  KBZ_BANKING: "KBZ Banking",
+  AYA_BANKING: "AYA Banking",
+  WAVE_MONEY: "Wave Money",
+};
+
 function formatDate(date: string | Date) {
   const d = new Date(date);
   return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
@@ -103,8 +111,9 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 pt-6 print:pt-3 text-center text-sm text-gray-400">
-        {order.status === "CANCELLED" ? t("invoice.cancelledNote") : t("invoice.thankYou")}
+      <div className="border-t border-gray-200 pt-6 print:pt-3 flex items-center justify-between text-sm text-gray-400">
+        <span>{PAYMENT_METHOD_LABELS[order.paymentMethod]}</span>
+        <span>{order.status === "CANCELLED" ? t("invoice.cancelledNote") : t("invoice.thankYou")}</span>
       </div>
     </div>
   );

@@ -131,6 +131,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
           ...(data.note !== undefined && { note: data.note || null }),
           ...(data.discount !== undefined && { discount: data.discount }),
           ...(data.status !== undefined && { status: data.status }),
+          ...(data.paymentMethod !== undefined && { paymentMethod: data.paymentMethod }),
           total,
         },
         include: {

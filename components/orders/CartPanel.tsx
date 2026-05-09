@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 import { useCartStore } from "@/store/cart";
 import { formatCurrency } from "@/lib/utils";
 import { useT } from "@/lib/i18n";
@@ -21,8 +22,8 @@ export function CartPanel() {
   const [error, setError] = useState("");
 
   const {
-    items, discount, customerName, note,
-    removeItem, updateQty, setDiscount, setCustomerName, setNote, clearCart,
+    items, discount, customerName, note, paymentMethod,
+    removeItem, updateQty, setDiscount, setCustomerName, setNote, setPaymentMethod, clearCart,
   } = useCartStore();
 
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
@@ -61,6 +62,7 @@ export function CartPanel() {
       customerName: customerName || undefined,
       note: note || undefined,
       discount,
+      paymentMethod,
       items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity, unitPrice: i.unitPrice })),
     });
   }
@@ -130,6 +132,16 @@ export function CartPanel() {
             <Label htmlFor="discount" className="text-xs text-gray-500">{t("label.discountKyats")}</Label>
             <Input id="discount" type="number" min={0} value={discount || ""} onChange={(e) => setDiscount(Number(e.target.value) || 0)} placeholder="0" className="mt-1 h-8 text-sm text-right tabular-nums" />
           </div>
+        </div>
+        <div>
+          <Label htmlFor="paymentMethod" className="text-xs text-gray-500">{t("payment.label")}</Label>
+          <Select id="paymentMethod" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as typeof paymentMethod)} className="mt-1 h-8 text-sm">
+            <option value="CASH">{t("payment.cash")}</option>
+            <option value="KPAY">{t("payment.kpay")}</option>
+            <option value="KBZ_BANKING">{t("payment.kbzBanking")}</option>
+            <option value="AYA_BANKING">{t("payment.ayaBanking")}</option>
+            <option value="WAVE_MONEY">{t("payment.waveMoney")}</option>
+          </Select>
         </div>
         <div>
           <Label htmlFor="note" className="text-xs text-gray-500">{t("label.note")}</Label>

@@ -162,6 +162,14 @@ export const my = {
   "productGrid.lowStock": "လက်ကျန်နည်းနေသည် - ",
   "productGrid.inStock": "လက်ကျန်ရှိသည်",
 
+  // Payment methods
+  "payment.label": "ငွေပေးချေမှုနည်းလမ်း",
+  "payment.kpay": "K Pay",
+  "payment.kbzBanking": "KBZ ဘဏ်",
+  "payment.ayaBanking": "AYA ဘဏ်",
+  "payment.waveMoney": "Wave Money",
+  "payment.cash": "ငွေသား",
+
   // Invoice
   "invoice.title": "ဘောင်ချာ",
   "invoice.billTo": "ဝယ်ယူသူ",
