@@ -10,7 +10,7 @@ export function Sidebar() {
       {/* Brand */}
       <div className="flex items-center justify-center px-4 py-4 border-b border-white/10">
         <div className="bg-white rounded-xl overflow-hidden">
-          <Image src="/Diva.jpg" alt="Diva Delivery Bag" width={180} height={90} className="object-contain" style={{ height: 72, width: "auto" }} />
+          <Image src="/Diva-removebg-preview.png" alt="Diva Delivery Bag" width={180} height={90} className="object-contain" style={{ height: 72, width: "auto" }} />
         </div>
       </div>
 

@@ -35,7 +35,7 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
     <div className="bg-white w-full max-w-2xl mx-auto print:max-w-full">
       <div className="flex items-start justify-between pb-6 mb-6 print:pb-3 print:mb-3 border-b border-gray-200">
         <div>
-          <Image src="/Diva.jpg" alt="Diva Delivery Bag" width={160} height={80} className="object-contain" style={{ height: 64, width: "auto" }} />
+          <Image src="/Diva-removebg-preview.png" alt="Diva Delivery Bag" width={160} height={80} className="object-contain" style={{ height: 64, width: "auto" }} />
           {storeAddress && <p className="mt-1 text-sm text-gray-500">{storeAddress}</p>}
           {storePhone   && <p className="text-sm text-gray-500">{storePhone}</p>}
         </div>

@@ -44,7 +44,7 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-8 flex flex-col items-center gap-2">
-        <Image src="/Diva.jpg" alt="Diva Delivery Bag" width={200} height={100} className="object-contain" style={{ height: 100, width: "auto" }} />
+        <Image src="/Diva-removebg-preview.png" alt="Diva Delivery Bag" width={200} height={100} className="object-contain" style={{ height: 100, width: "auto" }} />
         <p className="text-sm text-gray-500">{t("auth.signInToContinue")}</p>
       </div>
 
