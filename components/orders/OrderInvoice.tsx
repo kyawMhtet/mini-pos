@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
 import { useT } from "@/lib/i18n";
 import type { OrderWithItems } from "@/types";
@@ -25,7 +26,6 @@ interface OrderInvoiceProps {
 
 export function OrderInvoice({ order }: OrderInvoiceProps) {
   const { t } = useT();
-  const storeName    = process.env.NEXT_PUBLIC_STORE_NAME    ?? "Diva Delivery Bag";
   const storeAddress = process.env.NEXT_PUBLIC_STORE_ADDRESS ?? "";
   const storePhone   = process.env.NEXT_PUBLIC_STORE_PHONE   ?? "";
 
@@ -35,7 +35,7 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
     <div className="bg-white w-full max-w-2xl mx-auto print:max-w-full">
       <div className="flex items-start justify-between pb-6 mb-6 print:pb-3 print:mb-3 border-b border-gray-200">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{storeName}</h2>
+          <Image src="/Diva.jpg" alt="Diva Delivery Bag" width={160} height={80} className="object-contain" style={{ height: 64, width: "auto" }} />
           {storeAddress && <p className="mt-1 text-sm text-gray-500">{storeAddress}</p>}
           {storePhone   && <p className="text-sm text-gray-500">{storePhone}</p>}
         </div>

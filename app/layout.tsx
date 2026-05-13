@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Diva Delivery Bag",
   description: "Point of Sale system",
+  icons: { icon: "/Diva.jpg" },
 };
 
 export default function RootLayout({

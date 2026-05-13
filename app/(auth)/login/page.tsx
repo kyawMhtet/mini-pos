@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,13 +41,11 @@ export default function LoginPage() {
     }
   }
 
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Diva Delivery Bag";
-
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">{storeName}</h1>
-        <p className="mt-1 text-sm text-gray-500">{t("auth.signInToContinue")}</p>
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <Image src="/Diva.jpg" alt="Diva Delivery Bag" width={200} height={100} className="object-contain" style={{ height: 100, width: "auto" }} />
+        <p className="text-sm text-gray-500">{t("auth.signInToContinue")}</p>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">

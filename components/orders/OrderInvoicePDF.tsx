@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image as PDFImage } from "@react-pdf/renderer";
 import type { OrderWithItems } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -45,6 +45,7 @@ const s = StyleSheet.create({
   footer:      { borderTopWidth: 1, borderTopColor: "#e5e7eb", borderTopStyle: "solid", paddingTop: 16, textAlign: "center", fontSize: 9, color: "#9ca3af" },
   cancelBanner:{ borderWidth: 1, borderColor: "#fecaca", borderStyle: "solid", backgroundColor: "#fef2f2", borderRadius: 4, paddingVertical: 6, marginBottom: 16, alignItems: "center" },
   cancelText:  { fontSize: 11, fontWeight: "bold", color: "#dc2626", letterSpacing: 2, textTransform: "uppercase" },
+  logo:        { height: 48, objectFit: "contain" },
 });
 
 export type PDFLabels = {
@@ -61,6 +62,7 @@ export type PDFLabels = {
   thankYou: string;
   cancelled?: string;
   cancelledNote?: string;
+  logoUrl?: string;
 };
 
 interface Props {
@@ -69,7 +71,6 @@ interface Props {
 }
 
 export function OrderInvoicePDF({ order, labels }: Props) {
-  const storeName    = process.env.NEXT_PUBLIC_STORE_NAME    ?? "Diva Delivery Bag";
   const storeAddress = process.env.NEXT_PUBLIC_STORE_ADDRESS ?? "";
   const storePhone   = process.env.NEXT_PUBLIC_STORE_PHONE   ?? "";
   const subtotal = order.orderItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
@@ -79,7 +80,10 @@ export function OrderInvoicePDF({ order, labels }: Props) {
       <Page size="A4" style={s.page}>
         <View style={s.header}>
           <View>
-            <Text style={s.storeName}>{storeName}</Text>
+            {labels.logoUrl
+              ? <PDFImage src={labels.logoUrl} style={s.logo} />
+              : <Text style={s.storeName}>Diva Delivery Bag</Text>
+            }
             {storeAddress ? <Text style={s.storeInfo}>{storeAddress}</Text> : null}
             {storePhone   ? <Text style={s.storeInfo}>{storePhone}</Text>   : null}
           </View>

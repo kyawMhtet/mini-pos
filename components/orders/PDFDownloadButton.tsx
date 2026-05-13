@@ -36,6 +36,7 @@ export function PDFDownloadButton({ order }: Props) {
         discount: t("label.discountLine"),
         total:   t("label.total"),
         thankYou: t("invoice.thankYou"),
+        logoUrl: window.location.origin + "/Diva.jpg",
         ...(isCancelled && {
           cancelled: t("invoice.cancelled"),
           cancelledNote: t("invoice.cancelledNote"),
