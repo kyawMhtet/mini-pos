@@ -38,8 +38,8 @@ export function NavLinks({ onNavigate }: NavLinksProps) {
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
             isActive(pathname)
-              ? "bg-white/10 text-white"
-              : "text-white/55 hover:bg-white/5 hover:text-white/90"
+              ? "bg-gray-100 text-gray-900"
+              : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
           )}
         >
           <Icon className="size-4 shrink-0" />
