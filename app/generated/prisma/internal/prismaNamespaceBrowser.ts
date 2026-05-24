@@ -53,10 +53,12 @@ export const ModelName = {
   Product: 'Product',
   Order: 'Order',
   OrderItem: 'OrderItem',
+  DailyCounter: 'DailyCounter',
   User: 'User',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  LoginAttempt: 'LoginAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,9 +92,11 @@ export const ProductScalarFieldEnum = {
   name: 'name',
   sku: 'sku',
   description: 'description',
+  buyingPrice: 'buyingPrice',
   price: 'price',
   stock: 'stock',
   imageUrl: 'imageUrl',
+  size: 'size',
   isActive: 'isActive',
   categoryId: 'categoryId',
   createdAt: 'createdAt',
@@ -110,6 +114,7 @@ export const OrderScalarFieldEnum = {
   discount: 'discount',
   tax: 'tax',
   status: 'status',
+  paymentMethod: 'paymentMethod',
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -129,6 +134,14 @@ export const OrderItemScalarFieldEnum = {
 } as const
 
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+export const DailyCounterScalarFieldEnum = {
+  date: 'date',
+  value: 'value'
+} as const
+
+export type DailyCounterScalarFieldEnum = (typeof DailyCounterScalarFieldEnum)[keyof typeof DailyCounterScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -182,6 +195,20 @@ export const VerificationTokenScalarFieldEnum = {
 } as const
 
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const LoginAttemptScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  success: 'success',
+  ipAddress: 'ipAddress',
+  browser: 'browser',
+  os: 'os',
+  device: 'device',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginAttemptScalarFieldEnum = (typeof LoginAttemptScalarFieldEnum)[keyof typeof LoginAttemptScalarFieldEnum]
 
 
 export const SortOrder = {

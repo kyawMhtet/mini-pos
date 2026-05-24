@@ -65,6 +65,11 @@ export type Order = Prisma.OrderModel
  */
 export type OrderItem = Prisma.OrderItemModel
 /**
+ * Model DailyCounter
+ * 
+ */
+export type DailyCounter = Prisma.DailyCounterModel
+/**
  * Model User
  * 
  */
@@ -84,3 +89,8 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type VerificationToken = Prisma.VerificationTokenModel
+/**
+ * Model LoginAttempt
+ * 
+ */
+export type LoginAttempt = Prisma.LoginAttemptModel

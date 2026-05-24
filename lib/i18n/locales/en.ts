@@ -189,6 +189,7 @@ export const en = {
   "stock.current": "Current: ",
 
   // Mobile nav
+  "nav.loginHistory": "Login History",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
   "nav.navigationMenu": "Navigation menu",

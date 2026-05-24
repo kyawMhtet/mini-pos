@@ -94,7 +94,7 @@ export async function GET() {
     ]);
 
     const productIds = topProductsRaw.map(
-      (t: { productId: string }) => t.productId
+      (t: { productId: number }) => t.productId
     );
     const products = await prisma.product.findMany({
       where: {
@@ -109,12 +109,12 @@ export async function GET() {
       },
     });
     const nameById = Object.fromEntries(
-      products.map((p: { id: string; name: string }) => [p.id, p.name])
+      products.map((p: { id: number; name: string }) => [p.id, p.name])
     );
 
     const topProducts = topProductsRaw.map(
       (t: {
-        productId: string;
+        productId: number;
         _sum: { quantity: number | null };
       }) => ({
         name: nameById[t.productId] ?? "Unknown",

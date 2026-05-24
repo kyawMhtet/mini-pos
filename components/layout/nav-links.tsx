@@ -16,37 +16,37 @@ import { useT, type TKey } from "@/lib/i18n";
 const links = [
   {
     href: "/",
-    label: "Dashboard",
+    labelKey: "nav.dashboard" as TKey,
     icon: LayoutDashboard,
     isActive: (p: string) => p === "/",
   },
   {
     href: "/new-order",
-    label: "New Order",
+    labelKey: "nav.newOrder" as TKey,
     icon: ShoppingCart,
     isActive: (p: string) => p === "/new-order",
   },
   {
     href: "/orders",
-    label: "Orders",
+    labelKey: "nav.orders" as TKey,
     icon: ClipboardList,
     isActive: (p: string) => p.startsWith("/orders"),
   },
   {
     href: "/products",
-    label: "Products",
+    labelKey: "nav.products" as TKey,
     icon: Package,
     isActive: (p: string) => p.startsWith("/products"),
   },
   {
     href: "/stock",
-    label: "Stock",
+    labelKey: "nav.stock" as TKey,
     icon: Boxes,
     isActive: (p: string) => p.startsWith("/stock"),
   },
   {
     href: "/login-history",
-    label: "Login History",
+    labelKey: "nav.loginHistory" as TKey,
     icon: History,
     isActive: (p: string) => p.startsWith("/login-history"),
   },
