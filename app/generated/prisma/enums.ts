@@ -16,3 +16,14 @@ export const OrderStatus = {
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const PaymentMethod = {
+  KPAY: 'KPAY',
+  KBZ_BANKING: 'KBZ_BANKING',
+  AYA_BANKING: 'AYA_BANKING',
+  WAVE_MONEY: 'WAVE_MONEY',
+  CASH: 'CASH'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]

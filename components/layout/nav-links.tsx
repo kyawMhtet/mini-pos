@@ -8,16 +8,48 @@ import {
   ClipboardList,
   Package,
   Boxes,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT, type TKey } from "@/lib/i18n";
 
-const links: { href: string; labelKey: TKey; icon: React.ElementType; isActive: (p: string) => boolean }[] = [
-  { href: "/",         labelKey: "nav.dashboard", icon: LayoutDashboard, isActive: (p) => p === "/" },
-  { href: "/new-order",labelKey: "nav.newOrder",  icon: ShoppingCart,    isActive: (p) => p === "/new-order" },
-  { href: "/orders",   labelKey: "nav.orders",    icon: ClipboardList,   isActive: (p) => p.startsWith("/orders") },
-  { href: "/products", labelKey: "nav.products",  icon: Package,         isActive: (p) => p.startsWith("/products") },
-  { href: "/stock",    labelKey: "nav.stock",     icon: Boxes,           isActive: (p) => p.startsWith("/stock") },
+const links = [
+  {
+    href: "/",
+    labelKey: "nav.dashboard" as TKey,
+    icon: LayoutDashboard,
+    isActive: (p: string) => p === "/",
+  },
+  {
+    href: "/new-order",
+    labelKey: "nav.newOrder" as TKey,
+    icon: ShoppingCart,
+    isActive: (p: string) => p === "/new-order",
+  },
+  {
+    href: "/orders",
+    labelKey: "nav.orders" as TKey,
+    icon: ClipboardList,
+    isActive: (p: string) => p.startsWith("/orders"),
+  },
+  {
+    href: "/products",
+    labelKey: "nav.products" as TKey,
+    icon: Package,
+    isActive: (p: string) => p.startsWith("/products"),
+  },
+  {
+    href: "/stock",
+    labelKey: "nav.stock" as TKey,
+    icon: Boxes,
+    isActive: (p: string) => p.startsWith("/stock"),
+  },
+  {
+    href: "/login-history",
+    labelKey: "nav.loginHistory" as TKey,
+    icon: History,
+    isActive: (p: string) => p.startsWith("/login-history"),
+  },
 ];
 
 interface NavLinksProps {

@@ -189,6 +189,7 @@ export const my = {
   "stock.current": "လက်ရှိလက်ကျန် - ",
 
   // Mobile nav
+  "nav.loginHistory": "ဝင်ရောက်မှုမှတ်တမ်း",
   "nav.openMenu": "မီနူးဖွင့်ရန်",
   "nav.closeMenu": "မီနူးပိတ်ရန်",
   "nav.navigationMenu": "မီနူးလမ်းညွှန်",
