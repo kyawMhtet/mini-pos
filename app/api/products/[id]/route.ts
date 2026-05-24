@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { productSchema } from "@/lib/validations/product";
-import { Prisma } from "@/app/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 type Params = { params: Promise<{ id: string }> };
@@ -43,8 +43,10 @@ export async function PUT(request: NextRequest, { params }: Params) {
         name: data.name,
         sku: data.sku,
         description: data.description ?? null,
+        buyingPrice: data.buyingPrice,
         price: data.price,
         stock: data.stock,
+        size: data.size || null,
         imageUrl: data.imageUrl || null,
         isActive: data.isActive,
         categoryId: data.categoryId ?? null,

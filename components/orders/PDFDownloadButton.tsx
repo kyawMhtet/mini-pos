@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/lib/i18n";
 import type { OrderWithItems } from "@/types";
+import type { PDFLabels } from "./OrderInvoicePDF";
 
 interface Props {
   order: OrderWithItems;
@@ -11,6 +13,7 @@ interface Props {
 
 export function PDFDownloadButton({ order }: Props) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const { t } = useT();
 
   async function handleDownload() {
     setIsGenerating(true);
@@ -19,7 +22,28 @@ export function PDFDownloadButton({ order }: Props) {
         import("@react-pdf/renderer"),
         import("./OrderInvoicePDF"),
       ]);
-      const blob = await pdf(<OrderInvoicePDF order={order} />).toBlob();
+
+      const isCancelled = order.status === "CANCELLED";
+      const labels: PDFLabels = {
+        invoice: t("invoice.title"),
+        billTo:  t("invoice.billTo"),
+        note:    t("label.note"),
+        item:    t("label.item"),
+        qty:     t("label.qty"),
+        unitPrice: t("label.unitPrice"),
+        amount:  t("label.amount"),
+        subtotal: t("label.subtotal"),
+        discount: t("label.discountLine"),
+        total:   t("label.total"),
+        thankYou: t("invoice.thankYou"),
+        logoUrl: window.location.origin + "/Diva-removebg-preview.png",
+        ...(isCancelled && {
+          cancelled: t("invoice.cancelled"),
+          cancelledNote: t("invoice.cancelledNote"),
+        }),
+      };
+
+      const blob = await pdf(<OrderInvoicePDF order={order} labels={labels} />).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -35,12 +59,8 @@ export function PDFDownloadButton({ order }: Props) {
 
   return (
     <Button variant="outline" size="sm" onClick={handleDownload} disabled={isGenerating}>
-      {isGenerating ? (
-        <Loader2 className="size-3.5 animate-spin" />
-      ) : (
-        <Download className="size-3.5" />
-      )}
-      {isGenerating ? "Generating…" : "Download PDF"}
+      {isGenerating ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
+      {isGenerating ? t("state.generating") : t("action.downloadPdf")}
     </Button>
   );
 }

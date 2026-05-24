@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image as PDFImage } from "@react-pdf/renderer";
 import type { OrderWithItems } from "@/types";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -43,14 +43,34 @@ const s = StyleSheet.create({
   grandLabel:  { fontSize: 12, fontWeight: "bold", color: "#111827" },
   grandValue:  { fontSize: 12, fontWeight: "bold", color: "#111827" },
   footer:      { borderTopWidth: 1, borderTopColor: "#e5e7eb", borderTopStyle: "solid", paddingTop: 16, textAlign: "center", fontSize: 9, color: "#9ca3af" },
+  cancelBanner:{ borderWidth: 1, borderColor: "#fecaca", borderStyle: "solid", backgroundColor: "#fef2f2", borderRadius: 4, paddingVertical: 6, marginBottom: 16, alignItems: "center" },
+  cancelText:  { fontSize: 11, fontWeight: "bold", color: "#dc2626", letterSpacing: 2, textTransform: "uppercase" },
+  logo:        { height: 48, objectFit: "contain" },
 });
+
+export type PDFLabels = {
+  invoice: string;
+  billTo: string;
+  note: string;
+  item: string;
+  qty: string;
+  unitPrice: string;
+  amount: string;
+  subtotal: string;
+  discount: string;
+  total: string;
+  thankYou: string;
+  cancelled?: string;
+  cancelledNote?: string;
+  logoUrl?: string;
+};
 
 interface Props {
   order: OrderWithItems;
+  labels: PDFLabels;
 }
 
-export function OrderInvoicePDF({ order }: Props) {
-  const storeName    = process.env.NEXT_PUBLIC_STORE_NAME    ?? "Mini POS";
+export function OrderInvoicePDF({ order, labels }: Props) {
   const storeAddress = process.env.NEXT_PUBLIC_STORE_ADDRESS ?? "";
   const storePhone   = process.env.NEXT_PUBLIC_STORE_PHONE   ?? "";
   const subtotal = order.orderItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
@@ -58,45 +78,49 @@ export function OrderInvoicePDF({ order }: Props) {
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        {/* Header */}
         <View style={s.header}>
           <View>
-            <Text style={s.storeName}>{storeName}</Text>
+            {labels.logoUrl
+              ? <PDFImage src={labels.logoUrl} style={s.logo} />
+              : <Text style={s.storeName}>Diva Delivery Bag</Text>
+            }
             {storeAddress ? <Text style={s.storeInfo}>{storeAddress}</Text> : null}
             {storePhone   ? <Text style={s.storeInfo}>{storePhone}</Text>   : null}
           </View>
           <View>
-            <Text style={s.invoiceLabel}>Invoice</Text>
+            <Text style={s.invoiceLabel}>{labels.invoice}</Text>
             <Text style={s.invoiceNum}>{order.orderNumber}</Text>
             <Text style={s.invoiceDate}>{fmtDate(order.createdAt)}</Text>
           </View>
         </View>
 
-        {/* Bill To */}
+        {labels.cancelled ? (
+          <View style={s.cancelBanner}>
+            <Text style={s.cancelText}>{labels.cancelled}</Text>
+          </View>
+        ) : null}
+
         {order.customerName ? (
           <View style={s.section}>
-            <Text style={s.label}>Bill To</Text>
+            <Text style={s.label}>{labels.billTo}</Text>
             <Text style={s.value}>{order.customerName}</Text>
           </View>
         ) : null}
 
-        {/* Note */}
         {order.note ? (
           <View style={s.section}>
-            <Text style={s.label}>Note</Text>
+            <Text style={s.label}>{labels.note}</Text>
             <Text style={s.value}>{order.note}</Text>
           </View>
         ) : null}
 
-        {/* Table header */}
         <View style={s.tableHeader}>
-          <Text style={[s.thText, s.colItem]}>Item</Text>
-          <Text style={[s.thText, s.colQty]}>Qty</Text>
-          <Text style={[s.thText, s.colPrice]}>Unit Price</Text>
-          <Text style={[s.thText, s.colAmount]}>Amount</Text>
+          <Text style={[s.thText, s.colItem]}>{labels.item}</Text>
+          <Text style={[s.thText, s.colQty]}>{labels.qty}</Text>
+          <Text style={[s.thText, s.colPrice]}>{labels.unitPrice}</Text>
+          <Text style={[s.thText, s.colAmount]}>{labels.amount}</Text>
         </View>
 
-        {/* Rows */}
         {order.orderItems.map((item) => (
           <View key={item.id} style={s.row}>
             <View style={s.colItem}>
@@ -111,29 +135,27 @@ export function OrderInvoicePDF({ order }: Props) {
           </View>
         ))}
 
-        {/* Totals */}
         <View style={s.totalsWrap}>
           <View style={s.totalsBox}>
             <View style={s.totalRow}>
-              <Text style={s.totalLabel}>Subtotal</Text>
+              <Text style={s.totalLabel}>{labels.subtotal}</Text>
               <Text style={s.totalValue}>{fmtCurrency(subtotal)}</Text>
             </View>
             {order.discount > 0 ? (
               <View style={s.totalRow}>
-                <Text style={s.discLabel}>Discount</Text>
+                <Text style={s.discLabel}>{labels.discount}</Text>
                 <Text style={s.discValue}>− {fmtCurrency(order.discount)}</Text>
               </View>
             ) : null}
             <View style={s.grandLine}>
-              <Text style={s.grandLabel}>Total</Text>
+              <Text style={s.grandLabel}>{labels.total}</Text>
               <Text style={s.grandValue}>{fmtCurrency(order.total)}</Text>
             </View>
           </View>
         </View>
 
-        {/* Footer */}
         <View style={s.footer}>
-          <Text>Thank you for your business!</Text>
+          <Text>{labels.cancelled ? labels.cancelledNote : labels.thankYou}</Text>
         </View>
       </Page>
     </Document>

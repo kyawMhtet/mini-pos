@@ -1,17 +1,19 @@
 import { create } from "zustand";
-import type { ProductWithCategory, CartItem } from "@/types";
+import type { ProductWithCategory, CartItem, PaymentMethod } from "@/types";
 
 interface CartState {
   items: CartItem[];
   discount: number;
   customerName: string;
   note: string;
+  paymentMethod: PaymentMethod;
   addItem: (product: ProductWithCategory) => void;
   removeItem: (productId: number) => void;
   updateQty: (productId: number, qty: number) => void;
   setDiscount: (amount: number) => void;
   setCustomerName: (name: string) => void;
   setNote: (note: string) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
   clearCart: () => void;
 }
 
@@ -20,6 +22,7 @@ export const useCartStore = create<CartState>((set) => ({
   discount: 0,
   customerName: "",
   note: "",
+  paymentMethod: "CASH",
 
   addItem: (product) =>
     set((state) => {
@@ -54,5 +57,6 @@ export const useCartStore = create<CartState>((set) => ({
   setDiscount: (amount) => set({ discount: amount }),
   setCustomerName: (name) => set({ customerName: name }),
   setNote: (note) => set({ note }),
-  clearCart: () => set({ items: [], discount: 0, customerName: "", note: "" }),
+  setPaymentMethod: (method) => set({ paymentMethod: method }),
+  clearCart: () => set({ items: [], discount: 0, customerName: "", note: "", paymentMethod: "CASH" }),
 }));

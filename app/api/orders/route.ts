@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import { Prisma } from "@/app/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createOrderSchema } from "@/lib/validations/order";
 import { generateOrderNumber } from "@/lib/utils";
@@ -53,14 +53,27 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { customerName, note, discount, items } = createOrderSchema.parse(body);
+    const { customerName, note, discount, paymentMethod, items } = createOrderSchema.parse(body);
 
     const order = await prisma.$transaction(async (tx) => {
-      // Daily sequence for order number
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayCount = await tx.order.count({ where: { createdAt: { gte: today } } });
-      const orderNumber = generateOrderNumber(todayCount + 1);
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const dateKey = `${y}-${m}-${d}`;
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+      // On first use each day, seed from the actual order count so existing orders aren't re-used
+      const [counter] = await tx.$queryRaw<[{ value: bigint }]>`
+        INSERT INTO "DailyCounter" (date, value)
+        VALUES (
+          ${dateKey},
+          (SELECT COUNT(*) + 1 FROM "Order" WHERE "createdAt" >= ${todayStart})
+        )
+        ON CONFLICT (date) DO UPDATE SET value = "DailyCounter".value + 1
+        RETURNING value
+      `;
+      const orderNumber = generateOrderNumber(Number(counter.value));
 
       // Validate stock
       for (const item of items) {
@@ -86,6 +99,7 @@ export async function POST(request: NextRequest) {
           discount,
           total,
           status: "COMPLETED",
+          paymentMethod,
           orderItems: {
             create: items.map((i) => ({
               productId: i.productId,

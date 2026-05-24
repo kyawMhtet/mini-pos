@@ -27,17 +27,25 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       return Response.json({ error: "Adjustment must be non-zero" }, { status: 400 });
     }
 
-    const product = await prisma.product.findUnique({ where: { id }, select: { stock: true } });
-    if (!product) return Response.json({ error: "Product not found" }, { status: 404 });
+    const exists = await prisma.product.findUnique({ where: { id }, select: { id: true } });
+    if (!exists) return Response.json({ error: "Product not found" }, { status: 404 });
 
-    const newStock = product.stock + adjustment;
-    if (newStock < 0) {
+    // Atomic: only update if resulting stock >= 0, preventing race conditions
+    const whereClause = adjustment < 0
+      ? { id, stock: { gte: -adjustment } }
+      : { id };
+
+    const count = await prisma.product.updateMany({
+      where: whereClause,
+      data: { stock: { increment: adjustment } },
+    });
+
+    if (count.count === 0) {
       return Response.json({ error: "Stock cannot go below zero" }, { status: 400 });
     }
 
-    const updated = await prisma.product.update({
+    const updated = await prisma.product.findUnique({
       where: { id },
-      data: { stock: newStock },
       include: { category: true },
     });
     return Response.json(updated);

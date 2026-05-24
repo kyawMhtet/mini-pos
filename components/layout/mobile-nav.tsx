@@ -4,9 +4,12 @@ import { useState } from "react";
 import { Menu, Store } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { NavLinks } from "./nav-links";
+import { LanguageToggle } from "./LanguageToggle";
+import { useT } from "@/lib/i18n";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { t } = useT();
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME ?? "Mini POS";
 
   return (
@@ -14,7 +17,7 @@ export function MobileNav() {
       <button
         onClick={() => setOpen(true)}
         className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none lg:hidden"
-        aria-label="Open menu"
+        aria-label={t("nav.openMenu")}
       >
         <Menu className="size-5" />
       </button>
@@ -25,36 +28,31 @@ export function MobileNav() {
           style={{ backgroundColor: "#1a1a2e" }}
           showClose={false}
         >
-          {/* Visually hidden accessible title */}
-          <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+          <SheetTitle className="sr-only">{t("nav.navigationMenu")}</SheetTitle>
 
-          {/* Brand */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="flex size-8 items-center justify-center rounded-lg bg-white/10">
                 <Store className="size-4 text-white" />
               </div>
-              <span className="font-semibold text-white text-sm">
-                {storeName}
-              </span>
+              <span className="font-semibold text-white text-sm">{storeName}</span>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="rounded-md p-1.5 text-white/50 hover:text-white hover:bg-white/5 focus:outline-none"
-              aria-label="Close menu"
+              aria-label={t("nav.closeMenu")}
             >
               ✕
             </button>
           </div>
 
-          {/* Navigation */}
           <div className="flex-1 overflow-y-auto py-4">
             <NavLinks onNavigate={() => setOpen(false)} />
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-white/10 px-6 py-4">
+          <div className="border-t border-white/10 px-6 py-4 flex items-center justify-between">
             <p className="text-xs text-white/30">v1.0.0</p>
+            <LanguageToggle className="border-white/20 text-white/60 hover:bg-white/10 hover:text-white" />
           </div>
         </SheetContent>
       </Sheet>

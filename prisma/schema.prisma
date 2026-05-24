@@ -2,13 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
+  url       = env("DATABASE_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
@@ -25,9 +24,11 @@ model Product {
   name        String
   sku         String      @unique
   description String?
+  buyingPrice Float       @default(0)
   price       Float
   stock       Int         @default(0)
   imageUrl    String?
+  size        String?
   isActive    Boolean     @default(true)
   category    Category?   @relation(fields: [categoryId], references: [id])
   categoryId  Int?
@@ -44,8 +45,9 @@ model Order {
   total        Float
   discount     Float       @default(0)
   tax          Float       @default(0)
-  status       OrderStatus @default(PENDING)
-  note         String?
+  status        OrderStatus   @default(PENDING)
+  paymentMethod PaymentMethod @default(CASH)
+  note          String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
@@ -66,6 +68,20 @@ enum OrderStatus {
   PENDING
   COMPLETED
   CANCELLED
+}
+
+enum PaymentMethod {
+  KPAY
+  KBZ_BANKING
+  AYA_BANKING
+  WAVE_MONEY
+  CASH
+}
+
+// Atomic daily sequence for order numbers
+model DailyCounter {
+  date  String @id
+  value Int    @default(0)
 }
 
 // Auth.js (NextAuth v5) models

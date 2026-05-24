@@ -20,13 +20,14 @@ import {
   useUpdateProduct,
   type ProductStatusFilter,
 } from "@/hooks/useProducts";
+import { useT, type TKey } from "@/lib/i18n";
 import type { ProductInput } from "@/lib/validations/product";
 import type { ProductWithCategory } from "@/types";
 
-const STATUS_FILTERS: { label: string; value: ProductStatusFilter }[] = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
-  { label: "All", value: "all" },
+const STATUS_FILTERS: { labelKey: TKey; value: ProductStatusFilter }[] = [
+  { labelKey: "state.active",   value: "active" },
+  { labelKey: "state.inactive", value: "inactive" },
+  { labelKey: "state.all",      value: "all" },
 ];
 
 const PAGE_SIZE = 10;
@@ -36,6 +37,7 @@ export default function ProductsPage() {
   const [editProduct, setEditProduct] = useState<ProductWithCategory | null>(null);
   const [statusFilter, setStatusFilter] = useState<ProductStatusFilter>("active");
   const [page, setPage] = useState(1);
+  const { t, plural } = useT();
 
   const { data, isLoading, isError, refetch } = useProducts(statusFilter, page, PAGE_SIZE);
   const { data: categories = [] } = useCategories();
@@ -65,39 +67,37 @@ export default function ProductsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+          <h1 className="text-xl font-semibold text-gray-900">{t("products.title")}</h1>
           <p className="mt-0.5 text-sm text-gray-500">
-            {isLoading ? "Loading…" : `${total} product${total !== 1 ? "s" : ""}`}
+            {isLoading ? t("state.loading") : plural(total, "unit.product", "unit.products")}
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {/* Status filter */}
-          <div className="flex rounded-lg border bg-white text-sm overflow-hidden shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="flex flex-1 sm:flex-none rounded-lg border bg-white text-sm overflow-hidden shadow-sm">
             {STATUS_FILTERS.map((f) => (
               <button
                 key={f.value}
                 onClick={() => handleStatusChange(f.value)}
-                className={`px-4 py-2 font-medium transition-colors ${
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 font-medium transition-colors ${
                   statusFilter === f.value
                     ? "bg-gray-900 text-white"
                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                 }`}
               >
-                {f.label}
+                {t(f.labelKey)}
               </button>
             ))}
           </div>
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />
-            Add Product
+            <span className="hidden sm:inline">{t("action.addProduct")}</span>
+            <span className="sm:hidden">{t("action.add")}</span>
           </Button>
         </div>
       </div>
 
-      {/* Content */}
       {isLoading && (
         <div className="rounded-xl border bg-white">
           <div className="divide-y">
@@ -114,10 +114,10 @@ export default function ProductsPage() {
 
       {isError && (
         <div className="flex flex-col items-center gap-3 rounded-xl border bg-white py-16">
-          <p className="text-sm text-red-500">Failed to load products.</p>
+          <p className="text-sm text-red-500">{t("products.failedToLoad")}</p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="size-3.5" />
-            Retry
+            {t("action.retry")}
           </Button>
         </div>
       )}
@@ -126,25 +126,16 @@ export default function ProductsPage() {
         <div className="flex flex-col gap-4">
           <ProductTable products={products} onEdit={setEditProduct} />
           {totalPages > 1 && (
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              total={total}
-              pageSize={PAGE_SIZE}
-              onChange={setPage}
-            />
+            <Pagination page={page} totalPages={totalPages} total={total} pageSize={PAGE_SIZE} onChange={setPage} />
           )}
         </div>
       )}
 
-      {/* Add dialog */}
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Add Product</DialogTitle>
-            <DialogDescription>
-              Fill in the details below to add a new product to the catalogue.
-            </DialogDescription>
+            <DialogTitle>{t("action.addProduct")}</DialogTitle>
+            <DialogDescription>{t("products.addDescription")}</DialogDescription>
           </DialogHeader>
           <div className="px-6 pb-6 pt-4">
             <ProductForm
@@ -152,17 +143,16 @@ export default function ProductsPage() {
               isPending={isCreating}
               onSubmit={handleCreate}
               onCancel={() => setAddOpen(false)}
-              submitLabel="Create Product"
+              submitLabel={t("action.createProduct")}
             />
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Edit dialog */}
       <Dialog open={!!editProduct} onOpenChange={(o) => !o && setEditProduct(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Product</DialogTitle>
+            <DialogTitle>{t("action.editProduct")}</DialogTitle>
             <DialogDescription>{editProduct?.sku}</DialogDescription>
           </DialogHeader>
           <div className="px-6 pb-6 pt-4">
@@ -172,7 +162,7 @@ export default function ProductsPage() {
               isPending={isUpdating}
               onSubmit={handleUpdate}
               onCancel={() => setEditProduct(null)}
-              submitLabel="Save Changes"
+              submitLabel={t("action.saveChanges")}
             />
           </div>
         </DialogContent>

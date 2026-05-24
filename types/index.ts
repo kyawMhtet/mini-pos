@@ -4,9 +4,12 @@ import type {
   Order,
   OrderItem,
   OrderStatus,
-} from "@/app/generated/prisma/client";
+} from "@prisma/client";
 
 export type { Category, Product, Order, OrderItem, OrderStatus };
+
+export type PaymentMethod = "KPAY" | "KBZ_BANKING" | "AYA_BANKING" | "WAVE_MONEY" | "CASH";
+export type { UpdateOrderInput } from "@/lib/validations/order";
 
 export type ProductWithCategory = Product & {
   category: Category | null;
