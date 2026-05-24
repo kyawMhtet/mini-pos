@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { productSchema } from "@/lib/validations/product";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/app/generated/prisma/client";
 import { z } from "zod";
 
 type Params = { params: Promise<{ id: string }> };
