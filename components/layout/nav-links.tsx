@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Package,
   Boxes,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,12 @@ const links = [
     label: "Stock",
     icon: Boxes,
     isActive: (p: string) => p.startsWith("/stock"),
+  },
+  {
+    href: "/login-history",
+    label: "Login History",
+    icon: History,
+    isActive: (p: string) => p.startsWith("/login-history"),
   },
 ];
 

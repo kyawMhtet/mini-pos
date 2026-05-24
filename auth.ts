@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import authConfig from "./auth.config";
+import { UAParser } from "ua-parser-js";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -21,12 +22,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-async authorize(credentials) {
+async authorize(credentials, request) {
   const parsed = loginSchema.safeParse(credentials);
+  const attemptEmail = (credentials?.email as string) || "Unknown";
 
-  console.log(parsed);
+  const userAgent = request?.headers?.get("user-agent");
+  const ipAddress = request?.headers?.get("x-forwarded-for") || null;
+  
+  let browser = "Unknown";
+  let os = "Unknown";
+  let device = "desktop";
 
-  if (!parsed.success) return null;
+  if (userAgent) {
+    const parser = new UAParser(userAgent);
+    const result = parser.getResult();
+    browser = result.browser.name || "Unknown";
+    os = result.os.name || "Unknown";
+    device = result.device.type || "desktop";
+  }
+
+  const logAttempt = async (success: boolean, email: string) => {
+    try {
+      await prisma.loginAttempt.create({
+        data: {
+          email,
+          success,
+          ipAddress,
+          browser,
+          os,
+          device,
+        }
+      });
+    } catch (e) {
+      console.error("Failed to log attempt:", e);
+    }
+  };
+
+  if (!parsed.success) {
+    await logAttempt(false, attemptEmail);
+    return null;
+  }
 
   const user = await prisma.user.findUnique({
     where: { email: parsed.data.email },
@@ -38,18 +73,22 @@ async authorize(credentials) {
     },
   });
 
-  console.log(user);
-
-  if (!user?.password) return null;
+  if (!user?.password) {
+    await logAttempt(false, parsed.data.email);
+    return null;
+  }
 
   const valid = await bcrypt.compare(
     parsed.data.password,
     user.password
   );
 
-  console.log(valid);
+  if (!valid) {
+    await logAttempt(false, parsed.data.email);
+    return null;
+  }
 
-  if (!valid) return null;
+  await logAttempt(true, parsed.data.email);
 
   return {
     id: user.id,
