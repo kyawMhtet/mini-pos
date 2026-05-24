@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { prisma } from "@/lib/prisma";
 import { updateOrderSchema } from "@/lib/validations/order";
 
@@ -145,10 +145,10 @@ export async function PUT(request: NextRequest, { params }: Params) {
     return Response.json(order);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return Response.json({ error: "Validation failed", details: error.flatten() }, { status: 400 });
+      return Response.json({ error: "Validation failed", details: error.issues }, { status: 400 });
     }
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return Response.json({ error: "Order not found" }, { status: 404 });

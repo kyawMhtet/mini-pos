@@ -144,15 +144,12 @@ export async function GET() {
       topProducts,
       recentOrders,
     });
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[dashboard]", err);
     return Response.json(
-      {
-        error:
-          "Failed to fetch dashboard",
-      },
-      {
-        status: 500,
-      }
+      { error: message },
+      { status: 500 }
     );
   }
 }
