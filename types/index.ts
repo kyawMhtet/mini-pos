@@ -4,7 +4,7 @@ import type {
   Order,
   OrderItem,
   OrderStatus,
-} from "@/app/generated/prisma/client";
+} from "@prisma/client";
 
 export type { Category, Product, Order, OrderItem, OrderStatus };
 
