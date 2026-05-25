@@ -24,6 +24,7 @@ export default async function LoginHistoryPage() {
               <tr>
                 <th scope="col" className="px-6 py-4 font-medium">Status</th>
                 <th scope="col" className="px-6 py-4 font-medium">Email Attempted</th>
+                <th scope="col" className="px-6 py-4 font-medium">Reason</th>
                 <th scope="col" className="px-6 py-4 font-medium">Device & OS</th>
                 <th scope="col" className="px-6 py-4 font-medium">Browser</th>
                 <th scope="col" className="px-6 py-4 font-medium">Time</th>
@@ -32,7 +33,7 @@ export default async function LoginHistoryPage() {
             <tbody>
               {history.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                     No login attempts recorded yet.
                   </td>
                 </tr>
@@ -57,6 +58,9 @@ export default async function LoginHistoryPage() {
                     </td>
                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">
                       {attempt.email}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 text-xs">
+                      {attempt.reason ?? "—"}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">

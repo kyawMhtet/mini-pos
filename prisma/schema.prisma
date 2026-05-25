@@ -139,6 +139,7 @@ model LoginAttempt {
   id        String   @id @default(cuid())
   email     String
   success   Boolean
+  reason    String?
   ipAddress String?
   browser   String?
   os        String?

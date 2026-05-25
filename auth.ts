@@ -43,12 +43,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             device = result.device.type || "desktop";
           }
 
-          const logAttempt = async (success: boolean, email: string) => {
+          const logAttempt = async (success: boolean, email: string, reason?: string) => {
             try {
               await prisma.loginAttempt.create({
                 data: {
                   email,
                   success,
+                  reason: reason ?? null,
                   ipAddress,
                   browser,
                   os,
@@ -61,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           };
 
           if (!parsed.success) {
-            await logAttempt(false, attemptEmail);
+            await logAttempt(false, attemptEmail, "Invalid email format");
             return null;
           }
 
@@ -76,7 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
 
           if (!user?.password) {
-            await logAttempt(false, parsed.data.email);
+            await logAttempt(false, parsed.data.email, "User not found");
             return null;
           }
 
@@ -86,7 +87,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
 
           if (!valid) {
-            await logAttempt(false, parsed.data.email);
+            await logAttempt(false, parsed.data.email, "Wrong password");
             return null;
           }
 
