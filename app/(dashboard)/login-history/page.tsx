@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { Monitor, Smartphone, Globe, ShieldCheck, ShieldAlert } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function LoginHistoryPage() {
   const history = await prisma.loginAttempt.findMany({
     orderBy: { createdAt: "desc" },
